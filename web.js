@@ -44,7 +44,6 @@ app.post("/object", async (req, res) => {
 
       const formatDateTime = (date) => {
         const updatedDate = new Date(date);
-        updatedDate.setHours(date.getHours() + 9);
 
         const year = updatedDate.getFullYear();
         const month = String(updatedDate.getMonth() + 1).padStart(2, "0");
