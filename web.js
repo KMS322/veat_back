@@ -21,7 +21,7 @@ const totalDataStorage = [];
 app.post("/object", async (req, res) => {
   try {
     const receivedData = req.body;
-    console.log("Received data:", receivedData);
+    // console.log("Received data:", receivedData);
 
     const lock = true; // 락 획득
     if (lock) {
@@ -62,7 +62,7 @@ app.post("/object", async (req, res) => {
       await workbook.xlsx.writeFile(filePath);
 
       // 클라이언트에 응답
-      // res.sendFile(filePath);
+      console.log("send data success");
     } else {
       console.log("Failed to acquire lock for data storage.");
       res.status(500).send("Internal Server Error");
