@@ -60,6 +60,7 @@ app.post("/object", async (req, res) => {
       const filePath = path.join(__dirname, "public", `${formattedTime}.xlsx`);
       await workbook.xlsx.writeFile(filePath);
 
+      res.status(200).send("receive success");
       // 클라이언트에 응답
       console.log("send data success");
     } else {
