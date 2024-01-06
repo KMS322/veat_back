@@ -1,31 +1,35 @@
 const express = require("express");
 const path = require("path");
-const cors = require("cors"); // cors 미들웨어 추가
+const cors = require("cors");
 const app = express();
 const exceljs = require("exceljs");
 
 app.use(express.json());
-app.use(cors()); // 모든 요청에 대해 CORS를 허용
-
-const dataStorage = [];
+app.use(
+  cors({
+    origin: ["http://192.168.0.5", "fe80::4009:75ff:fe3c:200"],
+    credentials: true,
+  })
+);
 
 app.get("/", function (req, res) {
   // res.sendFile(path.join(__dirname, "build", "index.html"));
   // console.log("get");
   res.send("AA");
 });
-
+const totalDataStorage = [];
 app.post("/object", async (req, res) => {
   try {
     const receivedData = req.body;
     console.log("Received data:", receivedData);
 
-    // 동기화를 위한 락 사용 (JavaScript에서는 실제 락을 사용하는 것이 어려우므로 간단한 예시)
-    // 이 부분은 실제 프로덕션 환경에서는 더 고급스러운 동기화 방법이 필요할 수 있습니다.
     const lock = true; // 락 획득
     if (lock) {
-      dataStorage.push(receivedData);
-
+      const dataStorage = receivedData;
+      // dataStorage.push(receivedData);
+      // console.log("이것은 dataStorage : ", dataStorage);
+      totalDataStorage.push(dataStorage);
+      // console.log("total : ", totalDataStorage);
       // Excel 파일로 만들기
       const workbook = new exceljs.Workbook();
       const worksheet = workbook.addWorksheet("Data");
@@ -38,12 +42,27 @@ app.post("/object", async (req, res) => {
         worksheet.addRow([data.time, data.ppg, data.pulse, data.factor]);
       });
 
+      const formatDateTime = (date) => {
+        const updatedDate = new Date(date);
+        updatedDate.setHours(date.getHours() + 9);
+
+        const year = updatedDate.getFullYear();
+        const month = String(updatedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(updatedDate.getDate()).padStart(2, "0");
+        const hour = String(updatedDate.getHours()).padStart(2, "0");
+        const minute = String(updatedDate.getMinutes()).padStart(2, "0");
+        const second = String(updatedDate.getSeconds()).padStart(2, "0");
+
+        return `${year}-${month}-${day}_${hour}-${minute}-${second}`;
+      };
+
+      const formattedTime = formatDateTime(new Date());
       // Excel 파일로 저장
-      const filePath = path.join(__dirname, "public", "output.xlsx");
+      const filePath = path.join(__dirname, "public", `${formattedTime}.xlsx`);
       await workbook.xlsx.writeFile(filePath);
 
       // 클라이언트에 응답
-      res.sendFile(filePath);
+      // res.sendFile(filePath);
     } else {
       console.log("Failed to acquire lock for data storage.");
       res.status(500).send("Internal Server Error");
