@@ -73,7 +73,6 @@ app.post("/object", async (req, res) => {
 
 app.post("/objectRaw", async (req, res) => {
   try {
-    console.log("AA");
     const receivedData = req.body;
     console.log("Received data:", receivedData);
 
@@ -89,11 +88,11 @@ app.post("/objectRaw", async (req, res) => {
       const worksheet = workbook.addWorksheet("Data");
 
       // 헤더 추가
-      worksheet.addRow(["Time", "IR", "RED"]);
+      worksheet.addRow(["Time", "IR", "RED", "TEMP"]);
 
       // 데이터 추가
       dataStorage.forEach((data) => {
-        worksheet.addRow([data.time, data.ir, data.red]);
+        worksheet.addRow([data.time, data.ir, data.red, data.temp]);
       });
 
       const formatDateTime = (date) => {
