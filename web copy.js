@@ -136,20 +136,38 @@ app.post("/device", async (req, res) => {
     if (lock) {
       const dataStorage = receivedData;
 
-      // 기존의 Excel 파일 열기
-      const filePath = path.join(__dirname, "public", "data.xlsx");
+      totalDataStorage.push(dataStorage);
+
       const workbook = new exceljs.Workbook();
-      await workbook.xlsx.readFile(filePath);
+      const worksheet = workbook.addWorksheet("Data");
 
-      const worksheet = workbook.getWorksheet("Data");
-
-      // 새로운 데이터를 기존 워크시트에 추가
+      // 헤더 추가
+      worksheet.addRow(["DATE", "IR", "RED"]);
       const { ir, red, date } = dataStorage;
+      console.log("ir : ", ir);
+      console.log("red : ", red);
+      console.log("date : ", date);
+      // 데이터 추가
       for (let i = 0; i < ir.length; i++) {
-        worksheet.addRow([date[i], ir[i], red[i]]);
+        worksheet.addRow([date[i], ir[i], red[i]]); // DATE, IR, RED 열에 데이터 추가
       }
 
-      // 변경된 내용을 Excel 파일에 저장
+      const formatDateTime = (date) => {
+        const updatedDate = new Date(date);
+
+        const year = updatedDate.getFullYear();
+        const month = String(updatedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(updatedDate.getDate()).padStart(2, "0");
+        const hour = String(updatedDate.getHours()).padStart(2, "0");
+        const minute = String(updatedDate.getMinutes()).padStart(2, "0");
+        const second = String(updatedDate.getSeconds()).padStart(2, "0");
+
+        return `${year}-${month}-${day}_${hour}-${minute}-${second}`;
+      };
+
+      const formattedTime = formatDateTime(new Date());
+      // Excel 파일로 저장
+      const filePath = path.join(__dirname, "public", `${formattedTime}.xlsx`);
       await workbook.xlsx.writeFile(filePath);
 
       res.status(200).send("receive success");
