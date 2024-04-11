@@ -128,7 +128,7 @@ app.post("/objectRaw", async (req, res) => {
 
 app.post("/device", async (req, res) => {
   try {
-    console.log("req.body : ", req.body);
+    console.log("req : ", req);
     res.status(200).send("ok");
   } catch (error) {
     console.error(error);
