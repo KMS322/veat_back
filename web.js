@@ -5,6 +5,7 @@ const app = express();
 const exceljs = require("exceljs");
 
 app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: ["http://192.168.0.5", "fe80::4009:75ff:fe3c:200"],
@@ -128,7 +129,7 @@ app.post("/objectRaw", async (req, res) => {
 
 app.post("/device", async (req, res) => {
   try {
-    console.log("req : ", req);
+    console.log("req.body : ", req.body);
     res.status(200).send("ok");
   } catch (error) {
     console.error(error);
