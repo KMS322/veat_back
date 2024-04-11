@@ -131,9 +131,52 @@ app.post("/device", async (req, res) => {
   try {
     console.log("req.body : ", req.body);
     console.log("length: ", req.body.ir.length);
-    res.status(200).send("ok");
+    const receivedData = req.body;
+
+    const lock = true;
+    if (lock) {
+      const dataStorage = receivedData;
+
+      totalDataStorage.push(dataStorage);
+
+      const workbook = new exceljs.Workbook();
+      const worksheet = workbook.addWorksheet("Data");
+
+      // 헤더 추가
+      worksheet.addRow(["DATE", "IR", "RED"]);
+
+      // 데이터 추가
+      dataStorage.forEach((data) => {
+        worksheet.addRow([data.time, data.ppg, data.pulse, data.factor]);
+      });
+
+      const formatDateTime = (date) => {
+        const updatedDate = new Date(date);
+
+        const year = updatedDate.getFullYear();
+        const month = String(updatedDate.getMonth() + 1).padStart(2, "0");
+        const day = String(updatedDate.getDate()).padStart(2, "0");
+        const hour = String(updatedDate.getHours()).padStart(2, "0");
+        const minute = String(updatedDate.getMinutes()).padStart(2, "0");
+        const second = String(updatedDate.getSeconds()).padStart(2, "0");
+
+        return `${year}-${month}-${day}_${hour}-${minute}-${second}`;
+      };
+
+      const formattedTime = formatDateTime(new Date());
+      // Excel 파일로 저장
+      const filePath = path.join(__dirname, "public", `${formattedTime}.xlsx`);
+      await workbook.xlsx.writeFile(filePath);
+
+      res.status(200).send("receive success");
+      // 클라이언트에 응답
+      console.log("send data success");
+    } else {
+      console.log("Failed to acquire lock for data storage.");
+      res.status(500).send("Internal Server Error");
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Error processing data:", error);
     res.status(500).send("Internal Server Error");
   }
 });
