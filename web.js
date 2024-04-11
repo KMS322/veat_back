@@ -126,6 +126,16 @@ app.post("/objectRaw", async (req, res) => {
   }
 });
 
+app.post("/device", async (req, res) => {
+  try {
+    console.log("req.body : ", req.body);
+    res.status(200).send("ok");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 app.listen(8001, () => {
-  console.log(`Server is running on port 8001`);
+  console.log(`Server is running on port 8001!!`);
 });
