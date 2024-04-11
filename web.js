@@ -130,7 +130,6 @@ app.post("/objectRaw", async (req, res) => {
 app.post("/device", async (req, res) => {
   try {
     console.log("req.body : ", req.body);
-    console.log("length: ", req.body.ir.length);
     const receivedData = req.body;
 
     const lock = true;
@@ -145,6 +144,9 @@ app.post("/device", async (req, res) => {
       // 헤더 추가
       worksheet.addRow(["DATE", "IR", "RED"]);
       const { ir, red, date } = dataStorage;
+      console.log("ir : ", ir);
+      console.log("red : ", red);
+      console.log("date : ", date);
       // 데이터 추가
       for (let i = 0; i < ir.length; i++) {
         worksheet.addRow([date[i], ir[i], red[i]]); // DATE, IR, RED 열에 데이터 추가
