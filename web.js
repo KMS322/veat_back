@@ -144,11 +144,11 @@ app.post("/device", async (req, res) => {
 
       // 헤더 추가
       worksheet.addRow(["DATE", "IR", "RED"]);
-
+      const { ir, red, date } = dataStorage;
       // 데이터 추가
-      dataStorage.forEach((data) => {
-        worksheet.addRow([data.time, data.ppg, data.pulse, data.factor]);
-      });
+      for (let i = 0; i < ir.length; i++) {
+        worksheet.addRow([date[i], ir[i], red[i]]); // DATE, IR, RED 열에 데이터 추가
+      }
 
       const formatDateTime = (date) => {
         const updatedDate = new Date(date);
