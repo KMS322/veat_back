@@ -129,7 +129,7 @@ app.post("/objectRaw", async (req, res) => {
 
 app.post("/device", async (req, res) => {
   try {
-    console.log("req.body : ", req.body);
+    // console.log("req.body : ", req.body);
     const receivedData = req.body;
 
     const lock = true;
@@ -144,17 +144,24 @@ app.post("/device", async (req, res) => {
       const worksheet = workbook.getWorksheet("Data");
 
       // 새로운 데이터를 기존 워크시트에 추가
-      const { ir, red, date } = dataStorage;
+      // const { ir, red, date } = dataStorage;
+      // for (let i = 0; i < ir.length; i++) {
+      //   worksheet.addRow([date[i], ir[i], red[i]]);
+      // }
+      const { ir, red } = dataStorage;
       for (let i = 0; i < ir.length; i++) {
-        worksheet.addRow([date[i], ir[i], red[i]]);
+        worksheet.addRow([ir[i], red[i]]);
       }
 
       // 변경된 내용을 Excel 파일에 저장
-      await workbook.xlsx.writeFile(filePath);
-
+      const recorded = await workbook.xlsx.writeFile(filePath);
+      if (recorded) {
+        console.log("data recorded");
+      } else {
+        console.log("data unrecorded");
+      }
       res.status(200).send("receive success");
       // 클라이언트에 응답
-      console.log("send data success");
     } else {
       console.log("Failed to acquire lock for data storage.");
       res.status(500).send("Internal Server Error");
