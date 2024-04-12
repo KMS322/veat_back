@@ -150,7 +150,7 @@ app.post("/device", async (req, res) => {
       // }
       const { ir, red } = dataStorage;
       for (let i = 0; i < ir.length; i++) {
-        worksheet.addRow([ir[i], red[i]]);
+        worksheet.addRow([i, ir[i], red[i]]);
       }
 
       // 변경된 내용을 Excel 파일에 저장
