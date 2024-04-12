@@ -144,14 +144,14 @@ app.post("/device", async (req, res) => {
       const worksheet = workbook.getWorksheet("Data");
 
       // 새로운 데이터를 기존 워크시트에 추가
-      // const { ir, red, date } = dataStorage;
-      // for (let i = 0; i < ir.length; i++) {
-      //   worksheet.addRow([date[i], ir[i], red[i]]);
-      // }
-      const { ir, red } = dataStorage;
+      const { ir, red, date } = dataStorage;
       for (let i = 0; i < ir.length; i++) {
-        worksheet.addRow([i, ir[i], red[i]]);
+        worksheet.addRow([date[i], ir[i], red[i]]);
       }
+      // const { ir, red } = dataStorage;
+      // for (let i = 0; i < ir.length; i++) {
+      //   worksheet.addRow([i, ir[i], red[i]]);
+      // }
 
       // 변경된 내용을 Excel 파일에 저장
       // const recorded = await workbook.xlsx.writeFile(filePath);
