@@ -154,12 +154,14 @@ app.post("/device", async (req, res) => {
       }
 
       // 변경된 내용을 Excel 파일에 저장
-      const recorded = await workbook.xlsx.writeFile(filePath);
-      if (recorded) {
+      // const recorded = await workbook.xlsx.writeFile(filePath);
+      try {
+        const recorded = await workbook.xlsx.writeFile(filePath);
         console.log("data recorded");
-      } else {
-        console.log("data unrecorded");
+      } catch (error) {
+        console.error("Error occurred while writing to Excel file:", error);
       }
+
       res.status(200).send("receive success");
       // 클라이언트에 응답
     } else {
