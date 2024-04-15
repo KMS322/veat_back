@@ -4,11 +4,15 @@ const cors = require("cors");
 const app = express();
 const exceljs = require("exceljs");
 
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ limit: "100mb", extended: true }));
 app.use(
   cors({
-    origin: ["http://192.168.0.5", "fe80::4009:75ff:fe3c:200"],
+    origin: [
+      "http://192.168.0.5",
+      "fe80::4009:75ff:fe3c:200",
+      "http://192.168.192.165",
+    ],
     credentials: true,
   })
 );
@@ -149,9 +153,9 @@ app.post("/device", async (req, res) => {
       console.log("ir : ", ir);
       console.log("red : ", red);
       console.log("date : ", date);
-      for (let i = 0; i < ir.length; i++) {
-        worksheet.addRow([date[i], ir[i], red[i]]);
-      }
+      // for (let i = 0; i < ir.length; i++) {
+      //   worksheet.addRow([date[i], ir[i], red[i]]);
+      // }
       // const { ir, red } = dataStorage;
       // for (let i = 0; i < ir.length; i++) {
       //   worksheet.addRow([i, ir[i], red[i]]);
